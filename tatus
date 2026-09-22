@@ -1,0 +1,258 @@
+[1mdiff --git a/src/components/Careers/Forms/AmbassadorForm.tsx b/src/components/Careers/Forms/AmbassadorForm.tsx[m
+[1mindex a65a80f..0ec11b6 100644[m
+[1m--- a/src/components/Careers/Forms/AmbassadorForm.tsx[m
+[1m+++ b/src/components/Careers/Forms/AmbassadorForm.tsx[m
+[36m@@ -186,253 +186,6 @@[m [mconst AmbassadorForm: React.FC<Props> = ({ position, onClose }) => {[m
+         <div className="form-progress-bar"></div>[m
+       </div>[m
+ [m
+[31m-      {submitStatus && ([m
+[31m-        <div className={'status-message-premium ' + submitStatus.type}>[m
+[31m-          <span className="status-icon">{submitStatus.type === 'success' ? '✓' : '⚠'}</span>[m
+[31m-          {submitStatus.message}[m
+[31m-        </div>[m
+[31m-      )}[m
+[31m-[m
+[31m-      <form onSubmit={handleSubmit} onInvalid={(e) => { e.preventDefault(); setSubmitStatus({ type: "error", message: "Please fill out all required fields correctly." }); }} className="application-form-premium">[m
+[31m-        {/* Section 1: Personal Information */}[m
+[31m-        <div className="form-section-premium">[m
+[31m-          <div className="section-title-wrapper">[m
+[31m-            <span className="section-number">01</span>[m
+[31m-            <h3>Personal Information</h3>[m
+[31m-          </div>[m
+[31m-          <div className="form-grid-premium">[m
+[31m-            <div className="form-field-premium">[m
+[31m-              <label>Full Name *</label>[m
+[31m-              <input type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} required placeholder="Enter full name" />[m
+[31m-            </div>[m
+[31m-[m
+[31m-            <div className="form-field-premium">[m
+[31m-              <label>Date of Birth *</label>[m
+[31m-              <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleInputChange} required />[m
+[31m-            </div>[m
+[31m-[m
+[31m-            <div className="form-field-premium">[m
+[31m-              <label>Gender *</label>[m
+[31m-              <select name="gender" value={formData.gender} onChange={handleInputChange} required>[m
+[31m-                <option value="">Select</option>[m
+[31m-                <option value="Male">Male</option>[m
+[31m-                <option value="Female">Female</option>[m
+[31m-                <option value="Prefer not to say">Prefer not to say</option>[m
+[31m-              </select>[m
+[31m-            </div>[m
+[31m-[m
+[31m-            <div className="form-field-premium">[m
+[31m-              <label>City / Location *</label>[m
+[31m-              <input type="text" name="city" value={formData.city} onChange={handleInputChange} required placeholder="e.g. Lahore" />[m
+[31m-            </div>[m
+[31m-[m
+[31m-            <div className="form-field-premium">[m
+[31m-              <label>Email Address *</label>[m
+[31m-              <input type="email" name="email" value={formData.email} onChange={handleInputChange} required placeholder="email@address.com" />[m
+[31m-            </div>[m
+[31m-[m
+[31m-            <div className="form-field-premium">[m
+[31m-              <label>Phone Number *</label>[m
+[31m-              <input type="tel" name="phoneNumber" placeholder="03XXXXXXXXX" value={formData.phoneNumber} onChange={handleInputChange} required />[m
+[31m-            </div>[m
+[31m-[m
+[31m-            <div className="form-field-premium">[m
+[31m-              <label>LinkedIn Profile URL (optional)</label>[m
+[31m-              <input type="url" name="linkedinProfile" placeholder="https://linkedin.com/in/username" value={formData.linkedinProfile} onChange={handleInputChange} />[m
+[31m-            </div>[m
+[31m-          </div>[m
+[31m-        </div>[m
+[31m-[m
+[31m-        {/* Section 2: Academic & Professional Background */}[m
+[31m-        <div className="form-section-premium">[m
+[31m-          <div className="section-title-wrapper">[m
+[31m-            <span className="section-number">02</span>[m
+[31m-            <h3>Academic Background</h3>[m
+[31m-          </div>[m
+[31m-          <div className="form-grid-premium">[m
+[31m-            <div className="form-field-premium">[m
+[31m-              <label>Current Institution / University *</label>[m
+[31m-              <input type="text" name="university" value={formData.university} onChange={handleInputChange} required placeholder="e.g. NUST" />[m
+[31m-            </div>[m
+[31m-[m
+[31m-            <div className="form-field-premium">[m
+[31m-              <label>Degree Program & Year of Study *</label>[m
+[31m-              <input type="text" name="degreeProgram" value={formData.degreeProgram} onChange={handleInputChange} required placeholder="BS CS, 3rd Year" />[m
+[31m-            </div>[m
+[31m-[m
+[31m-            <div className="form-field-premium">[m
+[31m-              <label>CGPA / Academic Standing (optional)</label>[m
+[31m-              <input type="text" name="cgpa" placeholder="e.g. 3.5" value={formData.cgpa} onChange={handleInputChange} />[m
+[31m-            </div>[m
+[31m-[m
+[31m-            <div className="form-field-premium">[m
+[31m-              <label>Current Employment or Role (if any)</label>[m
+[31m-              <input type="text" name="currentRole" placeholder="e.g. Graphic Designer Intern" value={formData.currentRole} onChange={handleInputChange} />[m
+[31m-            </div>[m
+[31m-          </div>[m
+[31m-        </div>[m
+[31m-[m
+[31m-        {/* Section 3: Connection */}[m
+[31m-        <div className="form-section-premium">[m
+[31m-          <div className="section-title-wrapper">[m
+[31m-            <span className="section-number">03</span>[m
+[31m-            <h3>Connection to Yuni</h3>[m
+[31m-          </div>[m
+[31m-          <div className="form-grid-premium">[m
+[31m-            <div className="form-field-premium">[m
+[31m-              <label>How did you hear about Yuni? *</label>[m
+[31m-              <select name="hearAboutUs" value={formData.hearAboutUs} onChange={handleInputChange} required>[m
+[31m-                <option value="">Select</option>[m
+[31m-                <option value="Social media">Social media</option>[m
+[31m-                <option value="Friend">Friend</option>[m
+[31m-                <option value="University">University</option>[m
+[31m-                <option value="Event">Event</option>[m
+[31m-                <option value="Other">Other</option>[m
+[31m-              </select>[m
+[31m-            </div>[m
+[31m-[m
+[31m-            <div className="form-field-premium">[m
+[31m-              <label>Have you used any Yuni platform features/courses? *</label>[m
+[31m-              <select name="usedPlatform" value={formData.usedPlatform} onChange={handleInputChange} required>[m
+[31m-                <option value="">Select</option>[m
+[31m-                <option value="Yes">Yes</option>[m
+[31m-                <option value="No">No</option>[m
+[31m-              </select>[m
+[31m-            </div>[m
+[31m-          </div>[m
+[31m-[m
+[31m-          {formData.usedPlatform === 'Yes' && ([m
+[31m-            <div className="form-field-premium full-width" style={{ marginTop: '1.5rem' }}>[m
+[31m-              <label>Which ones, and what was your experience? *</label>[m
+[31m-              <textarea name="platformExperience" rows={2} value={formData.platformExperience} onChange={handleInputChange} required placeholder="Details..."></textarea>[m
+[31m-            </div>[m
+[31m-          )}[m
+[31m-        </div>[m
+[31m-[m
+[31m-        {/* Section 4: Motivation */}[m
+[31m-        <div className="form-section-premium">[m
+[31m-          <div className="section-title-wrapper">[m
+[31m-            <span className="section-number">04</span>[m
+[31m-            <h3>Why You Want to Be an Ambassador</h3>[m
+[31m-          </div>[m
+[31m-          <div className="form-field-premium full-width">[m
+[31m-            <label>Why do you want to represent Yuni Pakistan? (150–250 words) *</label>[m
+[31m-            <p className="form-help-text" style={{ fontSize: '0.8rem', color: '#888', marginBottom: '0.5rem' }}>Tell us what excites you about Yuni's mission and why you'd be a strong voice for AI-powered learning in your community.</p>[m
+[31m-            <textarea name="motivation" rows={4} value={formData.motivation} onChange={handleInputChange} required></textarea>[m
+[31m-          </div>[m
+[31m-[m
+[31m-          <div className="form-field-premium full-width" style={{ marginTop: '1.5rem' }}>[m
+[31m-            <label>What change do you want to create at your campus/city? (100–200 words) *</label>[m
+[31m-            <p className="form-help-text" style={{ fontSize: '0.8rem', color: '#888', marginBottom: '0.5rem' }}>Describe a problem you see around you — lack of skills, limited opportunities, awareness gaps — and how you'd address it as an ambassador.</p>[m
+[31m-            <textarea name="changeDesired" rows={4} value={formData.changeDesired} onChange={handleInputChange} required></textarea>[m
+[31m-          </div>[m
+[31m-[m
+[31m-          <div className="form-field-premium full-width" style={{ marginTop: '1.5rem' }}>[m
+[31m-            <label>What unique skills or networks do you bring? (100–150 words) *</label>[m
+[31m-            <p className="form-help-text" style={{ fontSize: '0.8rem', color: '#888', marginBottom: '0.5rem' }}>Examples: public speaking, social media following, student council role, tech club leadership, content creation, event management.</p>[m
+[31m-            <textarea name="uniqueSkills" rows={3} value={formData.uniqueSkills} onChange={handleInputChange} required></textarea>[m
+[31m-          </div>[m
+[31m-        </div>[m
+[31m-[m
+[31m-        {/* Section 5: Ambassador Activities */}[m
+[31m-        <div className="form-section-premium">[m
+[31m-          <div className="section-title-wrapper">[m
+[31m-            <span className="section-number">05</span>[m
+[31m-            <h3>Ambassador Activities</h3>[m
+[31m-          </div>[m
+[31m-          [m
+[31m-          <div className="form-field-premium full-width">[m
+[31m-            <label>Which activities are you willing to commit to? (Select all that apply) *</label>[m
+[31m-            <div className="checkbox-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginTop: '1rem' }}>[m
+[31m-              {[[m
+[31m-                "Organizing workshops or awareness sessions",[m
+[31m-                "Representing Yuni at campus fairs and events",[m
+[31m-                "Creating social media content about Yuni",[m
+[31m-                "Recruiting students for Yuni courses or internships",[m
+[31m-                "Hosting peer learning circles or study groups",[m
+[31m-                "Providing feedback on Yuni's platform and programs"[m
+[31m-              ].map(activity => ([m
+[31m-                <label key={activity} className="checkbox-container-premium" style={{ margin: 0, paddingLeft: '2rem' }}>[m
+[31m-                  <input type="checkbox" name="activities" value={activity} checked={formData.activities.includes(activity)} onChange={handleInputChange} />[m
+[31m-                  <span className="checkmark" style={{ width: '18px', height: '18px', top: '1px' }}></span>[m
+[31m-                  <p style={{ margin: 0, fontSize: '0.9rem' }}>{activity}</p>[m
+[31m-                </label>[m
+[31m-              ))}[m
+[31m-            </div>[m
+[31m-          </div>[m
+[31m-[m
+[31m-          <div className="form-grid-premium" style={{ marginTop: '1.5rem' }}>[m
+[31m-            <div className="form-field-premium">[m
+[31m-              <label>How many hours per week can you dedicate? *</label>[m
+[31m-              <select name="dedicatedHours" value={formData.dedicatedHours} onChange={handleInputChange} required>[m
+[31m-                <option value="">Select</option>[m
+[31m-                <option value="1–5 hrs">1–5 hrs</option>[m
+[31m-                <option value="5–10 hrs">5–10 hrs</option>[m
+[31m-                <option value="10+ hrs">10+ hrs</option>[m
+[31m-              </select>[m
+[31m-            </div>[m
+[31m-[m
+[31m-            <div className="form-field-premium">[m
+[31m-              <label>How long are you available for this role? *</label>[m
+[31m-              <select name="availabilityDuration" value={formData.availabilityDuration} onChange={handleInputChange} required>[m
+[31m-                <option value="">Select</option>[m
+[31m-                <option value="3 months">3 months</option>[m
+[31m-                <option value="6 months">6 months</option>[m
+[31m-                <option value="1 year">1 year</option>[m
+[31m-                <option value="Ongoing">Ongoing</option>[m
+[31m-              </select>[m
+[31m-            </div>[m
+[31m-          </div>[m
+[31m-        </div>[m
+[31m-[m
+[31m-        {/* Section 6: Portfolio & Presence */}[m
+[31m-        <div className="form-section-premium">[m
+[31m-          <div className="section-title-wrapper">[m
+[31m-            <span className="section-number">06</span>[m
+[31m-            <h3>Portfolio & Presence</h3>[m
+[31m-          </div>[m
+[31m-          <div className="form-grid-premium">[m
+[31m-            <div className="form-field-premium">[m
+[31m-              <label>Instagram/TikTok/YouTube handle (optional)</label>[m
+[31m-              <input type="text" name="socialHandle" placeholder="@username" value={formData.socialHandle} onChange={handleInputChange} />[m
+[31m-            </div>[m
+[31m-[m
+[31m-            <div className="form-field-premium">[m
+[31m-              <label>Estimated social media following (optional)</label>[m
+[31m-              <input type="text" name="socialReach" placeholder="e.g. 5,000" value={formData.socialReach} onChange={handleInputChange} />[m
+[31m-            </div>[m
+[31m-          </div>[m
+[31m-[m
+[31m-          <div className="form-field-premium full-width" style={{ marginTop: '1.5rem' }}>[m
+[31m-            <label>Link to any relevant work (optional)</label>[m
+[31m-            <p className="form-help-text" style={{ fontSize: '0.8rem', color: '#888', marginBottom: '0.5rem' }}>Event you organized, content you created, article you wrote</p>[m
+[31m-            <input type="url" name="portfolioUrl" value={formData.portfolioUrl} onChange={handleInputChange} placeholder="https://..." />[m
+[31m-          </div>[m
+[31m-        </div>[m
+[31m-[m
+[31m-        {/* Section 7: Declaration */}[m
+[31m-        <div className="form-section-premium declaration-wrapper-premium">[m
+[31m-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem', marginBottom: '1.5rem' }}>[m
+[31m-            <p style={{ fontSize: '0.9rem', color: '#aaa', margin: 0 }}>• I confirm that the information provided is accurate and truthful.</p>[m
+[31m-            <p style={{ fontSize: '0.9rem', color: '#aaa', margin: 0 }}>• I understand that the Ambassador role is voluntary/partially incentivized and not a full-time paid employment.</p>[m
+[31m-            <p style={{ fontSize: '0.9rem', color: '#aaa', margin: 0 }}>• I agree to uphold Yuni Pakistan's values of integrity, inclusion, and continuous growth.</p>[m
+[31m-            <p style={{ fontSize: '0.9rem', color: '#aaa', margin: 0 }}>• I consent to Yuni using my name and submitted content for promotional purposes.</p>[m
+[31m-          </div>[m
+[31m-[m
+[31m-          <label className="checkbox-container-premium">[m
+[31m-            <input type="checkbox" name="declaration" checked={formData.declaration} onChange={handleInputChange} required />[m
+[31m-            <span className="checkmark"></span>[m
+[31m-            <p>I agree to the terms above.</p>[m
+[31m-          </label>[m
+[31m-        </div>[m
+[31m-[m
+[31m-        {submitStatus && ([m
+[31m-          <div className={'status-message-premium ' + submitStatus.type} style={{ marginBottom: '1rem' }}>[m
+[31m-            <span className="status-icon">{submitStatus.type === 'success' ? '✓' : '⚠'}</span>[m
+[31m-            {submitStatus.message}[m
+[31m-          </div>[m
+[31m-        )}[m
+[31m-[m
+         <div className="form-actions-premium">[m
+           <button type="button" className="cancel-btn-premium" onClick={onClose}>Cancel</button>[m
+           <button type="submit" className="submit-btn-premium" disabled={isSubmitting}>[m

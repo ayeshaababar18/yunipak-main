@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers API Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #0a0a0a;
+            color: #fff;
+        }
+
+        .container {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #0ae448;
+        }
+
+        h1 {
+            color: #0ae448;
+            margin-top: 0;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0 15px;
+            background: #0a0a0a;
+            border: 1px solid #333;
+            color: #fff;
+            border-radius: 6px;
+            font-family: inherit;
+        }
+
+        label {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        button {
+            background: #0ae448;
+            color: #000;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        .status.success {
+            background: #0ae44820;
+            border: 1px solid #0ae448;
+            color: #0ae448;
+            display: block;
+        }
+
+        .status.error {
+            background: #ff444420;
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            display: block;
+        }
+
+        .status.loading {
+            background: #ffaa0020;
+            border: 1px solid #ffaa00;
+            color: #ffaa00;
+            display: block;
+        }
+
+        hr {
+            border-color: #333;
+            margin: 20px 0;
+        }
+
+        .field-group {
+            margin-bottom: 10px;
+        }
+
+        small {
+            color: #666;
+            font-size: 11px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📝 Careers API Test</h1>
+        <p>Test your Google Sheets integration for job applications</p>
+
+        <div class="field-group">
+            <label>🔗 API URL:</label>
+            <input type="text" id="apiUrl"
+                value="https://script.google.com/macros/s/AKfycbx-jQckKH2mPOTX8W_8D2ZNv8kAzMFUr5LgtDQXMZnH9HNbNOlSNxukuOL1R_ZUUnfKmQ/exec"
+                placeholder="Your Apps Script URL">
+        </div>
+
+        <hr>
+
+        <form id="testForm">
+            <h3>👤 Personal Information</h3>
+            <input type="text" name="fullName" placeholder="Full Name *" value="Test User" required>
+            <input type="text" name="fatherName" placeholder="Father's Name" value="Test Father">
+            <input type="text" name="cnic" placeholder="CNIC (12345-1234567-1)" value="12345-1234567-1">
+            <input type="date" name="dateOfBirth" value="1995-06-15">
+            <select name="gender">
+                <option value="">Gender</option>
+                <option value="Male" selected>Male</option>
+                <option value="Female">Female</option>
+            </select>
+            <input type="email" name="email" placeholder="Email *" value="test@example.com" required>
+            <input type="text" name="phoneNumber" placeholder="Phone *" value="03001234567" required>
+            <input type="text" name="city" placeholder="City" value="Lahore">
+            <select name="province">
+                <option value="Punjab" selected>Punjab</option>
+                <option value="Sindh">Sindh</option>
+                <option value="KPK">KPK</option>
+            </select>
+            <textarea name="currentAddress" rows="2"
+                placeholder="Current Address">House 123, Street 45, Lahore</textarea>
+
+            <h3>💼 Position Details</h3>
+            <input type="text" name="positionTitle" placeholder="Position Title *" value="Frontend Engineer" required>
+            <input type="text" name="positionId" placeholder="Position ID" value="pos-1">
+            <select name="experience">
+                <option value="">Experience</option>
+                <option value="Fresher">Fresher</option>
+                <option value="1-2 years" selected>1-2 years</option>
+                <option value="3-5 years">3-5 years</option>
+            </select>
+            <input type="text" name="expectedSalary" placeholder="Expected Salary *" value="150,000" required>
+            <select name="noticePeriod">
+                <option value="">Notice Period</option>
+                <option value="Immediate" selected>Immediate</option>
+                <option value="15 days">15 days</option>
+                <option value="1 month">1 month</option>
+            </select>
+
+            <h3>🎓 Education</h3>
+            <input type="text" name="highestDegree" placeholder="Highest Degree" value="Bachelor's">
+            <input type="text" name="university" placeholder="University" value="University of Test">
+            <input type="text" name="yearOfCompletion" placeholder="Year" value="2020">
+            <input type="text" name="cgpa" placeholder="CGPA" value="3.5/4.0">
+
+            <h3>🛠️ Skills</h3>
+            <textarea name="technicalSkills" rows="2"
+                placeholder="Technical Skills">React, Python, JavaScript</textarea>
+            <textarea name="certifications" rows="2" placeholder="Certifications">AWS Certified</textarea>
+
+            <h3>✅ Declaration</h3>
+            <label style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" name="declaration" checked style="width: auto;">
+                I confirm that the information is correct
+            </label>
+
+            <input type="hidden" name="status" value="pending">
+
+            <button type="submit" id="submitBtn">🚀 Submit Application</button>
+        </form>
+
+        <div id="status" class="status"></div>
+
+        <hr>
+        <small>💡 Tip: Check your Google Sheet after submission. The sheet "JobApplications" will be created
+            automatically.</small>
+    </div>
+
+    <script>
+        const form = document.getElementById('testForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusDiv = document.getElementById('status');
+        const apiUrlInput = document.getElementById('apiUrl');
+
+        function showStatus(type, message) {
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+            statusDiv.style.display = 'block';
+
+            if (type !== 'loading') {
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // Basic validation
+            const fullName = form.fullName.value.trim();
+            const email = form.email.value.trim();
+            const phone = form.phoneNumber.value.trim();
+
+            if (!fullName || !email || !phone) {
+                showStatus('error', '❌ Please fill required fields: Full Name, Email, Phone');
+                return;
+            }
+
+            if (!form.declaration.checked) {
+                showStatus('error', '❌ Please accept the declaration');
+                return;
+            }
+
+            // Collect form data
+            const formData = {};
+            const formElements = form.elements;
+
+            for (let i = 0; i < formElements.length; i++) {
+                const field = formElements[i];
+                if (field.name) {
+                    if (field.type === 'checkbox') {
+                        formData[field.name] = field.checked;
+                    } else {
+                        formData[field.name] = field.value;
+                    }
+                }
+            }
+
+            // Add timestamp
+            formData.timestamp = new Date().toISOString();
+            if (!formData.status) formData.status = 'pending';
+
+            console.log('Submitting:', formData);
+
+            // Submit to API
+            const apiUrl = apiUrlInput.value.trim();
+            if (!apiUrl) {
+                showStatus('error', '❌ Please enter API URL');
+                return;
+            }
+
+            showStatus('loading', '⏳ Submitting application...');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+
+            try {
+                // Create URLSearchParams
+                const params = new URLSearchParams();
+                for (const [key, value] of Object.entries(formData)) {
+                    params.append(key, value.toString());
+                }
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: params,
+                });
+
+                let result;
+                try {
+                    result = await response.json();
+                } catch {
+                    result = { success: response.ok };
+                }
+
+                if (response.ok && result.success !== false) {
+                    showStatus('success', '✅ Application submitted successfully! Check your Google Sheet and email for confirmation.');
+                    form.reset();
+                    // Set default values again
+                    form.fullName.value = 'Test User';
+                    form.email.value = 'test@example.com';
+                    form.phoneNumber.value = '03001234567';
+                    form.declaration.checked = true;
+                } else {
+                    throw new Error(result.message || 'Submission failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus('error', `❌ Error: ${error.message}. Make sure your Apps Script is deployed with "Anyone" access.`);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Submit Application';
+            }
+        });
+    </script>
+</body>
+
+</html>

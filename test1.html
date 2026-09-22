@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheets Enrollment - Simple Tester</title>
+    <style>
+        /* minimal style just for readability, no complex CSS */
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', monospace;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .tester-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            margin-top: 0;
+            border-bottom: 2px solid #0ae448;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        .info-banner {
+            background: #eef2ff;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 0.9rem;
+            border-left: 4px solid #3b82f6;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 4px;
+            font-size: 0.85rem;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-family: monospace;
+            box-sizing: border-box;
+        }
+
+        .row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        button {
+            background: #0ae448;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 40px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background: #07c03c;
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+            display: block;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+            display: block;
+        }
+
+        .status.loading {
+            background: #e0e7ff;
+            color: #1e3a8a;
+            display: block;
+        }
+
+        hr {
+            margin: 20px 0;
+        }
+
+        .note {
+            background: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 10px;
+            font-size: 0.8rem;
+            margin: 16px 0;
+        }
+
+        .bank-sample {
+            background: #f3f4f6;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tester-container">
+        <h1>📋 GOOGLE SHEETS ENROLLMENT TESTER</h1>
+        <p>Simulate or real submission to your Apps Script Web App. Use this form to test the exact payload structure.
+        </p>
+
+        <div class="info-banner">
+            ⚙️ <strong>Current mode:</strong> <span id="modeBadge">🔁 TEST MODE (mock, no actual sheet)</span><br>
+            ✅ Data will be logged to console but NOT sent to real Google Sheets. <br>
+            🔁 To test <strong>real Google Sheets</strong>, toggle the switch below.
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+            <label style="display: inline-flex; align-items: center; gap: 8px; margin: 0;">
+                <input type="checkbox" id="toggleRealMode">
+                <span style="font-weight: normal;">🌍 Enable REAL Google Sheets submission</span>
+            </label>
+            <span id="realStatus"
+                style="font-size:0.75rem; background:#e5e7eb; padding:2px 8px; border-radius:20px;">mock mode</span>
+        </div>
+
+        <div class="note">
+            📌 <strong>Your Apps Script URL (replace inside code):</strong> <code id="currentUrlDisplay"
+                style="background:#1e1e2f; color:#0ae448; padding:2px 5px;">https://script.google.com/macros/s/AKfycbxv3FVEPexjV4hLcAWNj6FafStyFzqzrJWzo-Zk8FJFOWkxw-mh9bxNi-ZYbwnLHyfzxg/exec</code><br>
+            ✏️ You can edit the URL below if you have a different deployment.
+        </div>
+
+        <div>
+            <label>Google Apps Script Web App URL (POST endpoint):</label>
+            <input type="text" id="customSheetUrl"
+                value="https://script.google.com/macros/s/AKfycbxv3FVEPexjV4hLcAWNj6FafStyFzqzrJWzo-Zk8FJFOWkxw-mh9bxNi-ZYbwnLHyfzxg/exec"
+                placeholder="Paste your Apps Script URL">
+        </div>
+
+        <hr>
+
+        <form id="testForm">
+            <!-- COURSE INFO (pre-filled sample) -->
+            <div style="background:#fafafa; padding:12px; border-radius: 8px; margin-bottom: 12px;">
+                <p><strong>📚 Course Details (editable)</strong></p>
+                <div class="row-2">
+                    <div>
+                        <label>Course ID *</label>
+                        <input type="text" name="courseId" value="course-5" placeholder="e.g., course-1">
+                    </div>
+                    <div>
+                        <label>Course Title *</label>
+                        <input type="text" name="courseTitle" value="Full-Stack Web Development"
+                            placeholder="Course name">
+                    </div>
+                    <div>
+                        <label>Course Price *</label>
+                        <input type="text" name="coursePrice" value="Rs. 25,000">
+                    </div>
+                    <div>
+                        <label>Status (pending/approved)</label>
+                        <input type="text" name="status" value="pending">
+                    </div>
+                </div>
+            </div>
+
+            <!-- PERSONAL INFO (required fields only for quick test) -->
+            <p><strong>👤 Personal Information (required *)</strong></p>
+            <div class="row-2">
+                <div><label>Full Name *</label><input type="text" name="fullName" value="Test User" required></div>
+                <div><label>Father's Name *</label><input type="text" name="fatherName" value="Father Test"></div>
+                <div><label>CNIC (XXXXX-XXXXXXX-X) *</label><input type="text" name="cnic" value="12345-1234567-1"
+                        required></div>
+                <div><label>Date of Birth</label><input type="date" name="dateOfBirth" value="1995-06-15"></div>
+                <div><label>Gender</label><select name="gender">
+                        <option>Male</option>
+                        <option>Female</option>
+                        <option>Other</option>
+                    </select></div>
+                <div><label>Email *</label><input type="email" name="email" value="student@example.com" required></div>
+                <div><label>Phone Number *</label><input type="text" name="phoneNumber" value="03001234567" required>
+                </div>
+                <div><label>Alternate Phone</label><input type="text" name="alternatePhone" value=""></div>
+                <div><label>City *</label><input type="text" name="city" value="Lahore"></div>
+                <div><label>Province</label><select name="province">
+                        <option>Punjab</option>
+                        <option>Sindh</option>
+                        <option>KPK</option>
+                    </select></div>
+            </div>
+            <div><label>Current Address</label><textarea name="currentAddress"
+                    rows="2">House 123, Street 45, Lahore</textarea></div>
+
+            <!-- PAYMENT & TRANSACTION -->
+            <p><strong>💰 Payment & Transaction (required for validation)</strong></p>
+            <div class="row-2">
+                <div><label>Payment Method *</label><select name="paymentMethod">
+                        <option value="">Select</option>
+                        <option value="bank">Bank Transfer</option>
+                        <option value="easypaisa">Easypaisa/JazzCash</option>
+                    </select></div>
+                <div><label>Transaction ID *</label><input type="text" name="transactionId" value="TXN987654321"
+                        required></div>
+                <div><label>Transaction Date *</label><input type="date" name="transactionDate" value="2026-05-07">
+                </div>
+                <div><label>Transaction Amount *</label><input type="text" name="transactionAmount" value="25000"></div>
+                <div><label>Bank Name (optional)</label><input type="text" name="bankName" value="Meezan Bank"></div>
+                <div><label>Bank Account Title</label><input type="text" name="bankAccountTitle" value="YUNI Education">
+                </div>
+                <div><label>Bank Account Number</label><input type="text" name="bankAccountNumber"
+                        value="1234-567890-12-3"></div>
+            </div>
+
+            <!-- EDUCATIONAL (quick fields) -->
+            <p><strong>🎓 Educational Background</strong></p>
+            <div class="row-2">
+                <div><label>Highest Qualification</label><input type="text" name="highestQualification"
+                        value="Bachelor's"></div>
+                <div><label>Institution</label><input type="text" name="institution" value="University of Testing">
+                </div>
+                <div><label>Year of Completion</label><input type="text" name="yearOfCompletion" value="2020"></div>
+                <div><label>Percentage/CGPA</label><input type="text" name="percentage" value="3.6/4.0"></div>
+            </div>
+
+            <!-- PROFESSIONAL (optional) -->
+            <p><strong>💼 Professional</strong></p>
+            <div class="row-2">
+                <div><label>Current Employment</label><input type="text" name="currentEmployment"
+                        value="Employed Full-time"></div>
+                <div><label>Organization</label><input type="text" name="organization" value="Tech Corp"></div>
+                <div><label>Designation</label><input type="text" name="designation" value="Software Engineer"></div>
+            </div>
+
+            <!-- ADDITIONAL -->
+            <p><strong>ℹ️ Additional</strong></p>
+            <div class="row-2">
+                <div><label>How did you hear about us?</label><input type="text" name="hearAboutUs" value="LinkedIn">
+                </div>
+                <div><label>Referral Code</label><input type="text" name="referralCode" value="REF123"></div>
+            </div>
+            <div><label>Why join this course?</label><textarea name="whyJoin"
+                    rows="2">Looking to upgrade my development skills</textarea></div>
+
+            <!-- Declaration checkbox -->
+            <div style="margin: 15px 0;">
+                <label style="display: flex; gap: 8px; align-items: center;">
+                    <input type="checkbox" name="declaration" checked> I declare that all information is correct and
+                    payment details are valid.
+                </label>
+            </div>
+
+            <!-- hidden timestamp will be added dynamically -->
+            <input type="hidden" name="timestamp" id="timestampField">
+
+            <button type="submit" id="submitBtn">🚀 SUBMIT ENROLLMENT (test sheet)</button>
+        </form>
+
+        <div id="responseStatus" class="status"></div>
+
+        <hr>
+        <details>
+            <summary>📄 EXPECTED PAYLOAD STRUCTURE (for Google Sheets)</summary>
+            <pre style="background:#1e1e2f; color:#ddd; padding:10px; border-radius:8px; overflow-x:auto;">
+{
+  fullName, fatherName, cnic, dateOfBirth, gender, email, phoneNumber, 
+  alternatePhone, currentAddress, city, province, highestQualification, 
+  institution, yearOfCompletion, percentage, courseId, courseTitle, coursePrice, 
+  paymentMethod, bankName, bankAccountTitle, bankAccountNumber, transactionId, 
+  transactionDate, transactionAmount, currentEmployment, organization, 
+  designation, hearAboutUs, referralCode, whyJoin, declaration, timestamp, status
+}
+        </pre>
+        </details>
+        <div class="bank-sample">
+            💡 <strong>Test tip:</strong> For real submission, set "Enable REAL Google Sheets" and ensure your Apps
+            Script accepts POST with form-urlencoded data. The script should write to a Google Sheet.
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            // DOM elements
+            const form = document.getElementById('testForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const statusDiv = document.getElementById('responseStatus');
+            const toggleRealCheckbox = document.getElementById('toggleRealMode');
+            const realStatusSpan = document.getElementById('realStatus');
+            const modeBadge = document.getElementById('modeBadge');
+            const customUrlInput = document.getElementById('customSheetUrl');
+            const currentUrlDisplaySpan = document.getElementById('currentUrlDisplay');
+
+            let isRealMode = false;  // default mock
+
+            // update UI mode indicator
+            function updateModeUI() {
+                if (isRealMode) {
+                    realStatusSpan.innerText = '🔴 REAL MODE (live sheet)';
+                    realStatusSpan.style.background = '#fee2e2';
+                    modeBadge.innerHTML = '🌍 REAL SUBMISSION MODE – will send to Google Sheets URL';
+                } else {
+                    realStatusSpan.innerText = '🟢 MOCK MODE (console only)';
+                    realStatusSpan.style.background = '#d1fae5';
+                    modeBadge.innerHTML = '🔁 TEST MODE (mock, no actual sheet)';
+                }
+            }
+
+            // load custom URL from localStorage if any, and display
+            function loadCustomUrl() {
+                const saved = localStorage.getItem('gSheetTesterUrl');
+                if (saved && saved.trim() !== '') {
+                    customUrlInput.value = saved;
+                }
+                updateDisplayUrl();
+            }
+            function updateDisplayUrl() {
+                let url = customUrlInput.value.trim();
+                if (url === '') url = '(empty URL)';
+                currentUrlDisplaySpan.innerText = url;
+            }
+            customUrlInput.addEventListener('input', function () {
+                localStorage.setItem('gSheetTesterUrl', customUrlInput.value.trim());
+                updateDisplayUrl();
+            });
+
+            // real mode toggle
+            toggleRealCheckbox.addEventListener('change', function (e) {
+                isRealMode = e.target.checked;
+                updateModeUI();
+            });
+
+            // helper to show status message
+            function showStatus(type, message) {
+                statusDiv.className = `status ${type}`;
+                statusDiv.innerText = message;
+                if (type !== 'loading') {
+                    setTimeout(() => {
+                        if (statusDiv.className === `status ${type}`) {
+                            statusDiv.style.display = 'none';
+                            statusDiv.className = 'status';
+                        }
+                    }, 5000);
+                }
+                statusDiv.style.display = 'block';
+            }
+
+            function hideStatus() {
+                statusDiv.style.display = 'none';
+            }
+
+            // collecting form data as plain object (exactly same as original EnrollmentData)
+            function collectFormData() {
+                const formElements = form.elements;
+                const data = {};
+
+                // iterate over all named fields
+                for (let i = 0; i < formElements.length; i++) {
+                    const field = formElements[i];
+                    if (!field.name) continue;
+                    if (field.type === 'checkbox') {
+                        data[field.name] = field.checked;
+                    } else {
+                        data[field.name] = field.value;
+                    }
+                }
+                // add timestamp
+                data.timestamp = new Date().toISOString();
+                // ensure declaration boolean as true/false
+                data.declaration = !!data.declaration;
+                // add default status if missing
+                if (!data.status) data.status = "pending";
+                return data;
+            }
+
+            // submit to real Google Sheets (POST with no-cors, application/x-www-form-urlencoded)
+            async function submitToRealSheets(payload, url) {
+                // Convert payload to URLSearchParams (just like original React code)
+                const params = new URLSearchParams();
+                for (const [key, value] of Object.entries(payload)) {
+                    if (value !== undefined && value !== null) {
+                        params.append(key, value.toString());
+                    }
+                }
+
+                // using fetch with no-cors mode (same as original app)
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        mode: 'no-cors',        // because Apps Script redirect often requires no-cors to avoid preflight
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: params,
+                    });
+                    // With no-cors, response is opaque – we cannot read status, but we assume success if no network error.
+                    // In original they treat any successful fetch as success.
+                    return { success: true, message: 'Request sent to Google Sheets (no-cors mode). Check your Google Sheet for new row.' };
+                } catch (err) {
+                    console.error('Fetch error:', err);
+                    return { success: false, message: `Network error: ${err.message}` };
+                }
+            }
+
+            // Mock submission: logs to console and simulates delay
+            async function mockSubmit(payload) {
+                console.log('📝 MOCK SUBMISSION - Enrollment payload (Google Sheets simulation):');
+                console.log(JSON.stringify(payload, null, 2));
+                await new Promise(resolve => setTimeout(resolve, 700));
+                return { success: true, message: '✅ TEST MODE: Data captured in console. No actual Google Sheets call made. To enable real sheet, toggle real mode.' };
+            }
+
+            // Form submit handler
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                // client-side required field validation (mirroring original)
+                const fullName = form.querySelector('[name="fullName"]')?.value.trim();
+                const cnic = form.querySelector('[name="cnic"]')?.value.trim();
+                const email = form.querySelector('[name="email"]')?.value.trim();
+                const phone = form.querySelector('[name="phoneNumber"]')?.value.trim();
+                const paymentMethod = form.querySelector('[name="paymentMethod"]')?.value;
+                const transactionId = form.querySelector('[name="transactionId"]')?.value.trim();
+                const transactionAmount = form.querySelector('[name="transactionAmount"]')?.value.trim();
+                const declarationCheck = form.querySelector('[name="declaration"]')?.checked;
+
+                if (!fullName || !cnic || !email || !phone) {
+                    showStatus('error', '❌ Validation failed: Full Name, CNIC, Email, Phone Number are required.');
+                    return;
+                }
+                const cnicRegex = /^[0-9]{5}-[0-9]{7}-[0-9]$/;
+                if (!cnicRegex.test(cnic)) {
+                    showStatus('error', '❌ CNIC format invalid. Use XXXXX-XXXXXXX-X');
+                    return;
+                }
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showStatus('error', '❌ Invalid email address');
+                    return;
+                }
+                if (!paymentMethod) {
+                    showStatus('error', '❌ Payment method is required');
+                    return;
+                }
+                if (!transactionId || !transactionAmount) {
+                    showStatus('error', '❌ Transaction ID and Amount are required');
+                    return;
+                }
+                if (!declarationCheck) {
+                    showStatus('error', '❌ You must accept the declaration');
+                    return;
+                }
+
+                // collect payload
+                const payload = collectFormData();
+                console.log('🔍 Full payload ready for submission:', payload);
+
+                // determine target URL and mode
+                let targetUrl = customUrlInput.value.trim();
+                if (!targetUrl) {
+                    showStatus('error', '❌ Google Sheets URL is empty. Provide a valid Apps Script URL.');
+                    return;
+                }
+
+                // Ensure URL looks like a script URL (basic warning)
+                if (!targetUrl.includes('script.google.com') && !targetUrl.includes('http')) {
+                    showStatus('error', '⚠️ URL seems invalid. It should be a Google Apps Script Web App URL (https://script.google.com/.../exec)');
+                    return;
+                }
+
+                // set loading state
+                showStatus('loading', '⏳ Submitting enrollment data ...');
+                submitBtn.disabled = true;
+                submitBtn.textContent = 'Submitting...';
+
+                let result;
+                try {
+                    if (isRealMode) {
+                        result = await submitToRealSheets(payload, targetUrl);
+                    } else {
+                        result = await mockSubmit(payload);
+                    }
+
+                    if (result.success) {
+                        showStatus('success', `✨ ${result.message} ${isRealMode ? 'Check your Google Sheet for new row.' : 'Switch to REAL mode to send actual data.'}`);
+                        // optional: reset form but keep test data? We'll just keep but show success
+                        if (!isRealMode) {
+                            // Additional log reminder for real testing
+                            console.log('💡 TIP: To send to real Google Sheets, toggle "Enable REAL Google Sheets" & use valid Apps Script URL');
+                        }
+                    } else {
+                        showStatus('error', `❌ Submission failed: ${result.message}`);
+                    }
+                } catch (err) {
+                    console.error('unexpected error:', err);
+                    showStatus('error', `❌ Unexpected error: ${err.message}`);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = '🚀 SUBMIT ENROLLMENT (test sheet)';
+                    // hide loading after 0.5 sec if needed but status will overrides;
+                    setTimeout(() => {
+                        if (statusDiv.className === 'status loading') {
+                            statusDiv.style.display = 'none';
+                        }
+                    }, 3000);
+                }
+            });
+
+            // set up initial state
+            loadCustomUrl();
+            updateModeUI();
+            // Set default for timestamp hidden field on each submit but anyway we set in payload
+            // Additionally pre-fill any default missing optional fields present in original spec
+            // ensure date of birth placeholder if empty
+            const dobField = document.querySelector('[name="dateOfBirth"]');
+            if (dobField && !dobField.value) dobField.value = '1990-01-01';
+            // Pre-set payment method default
+            const pmField = document.querySelector('[name="paymentMethod"]');
+            if (pmField && !pmField.value) pmField.value = 'bank';
+            // show console info
+            console.log('🧪 Google Sheets Tester ready. Use form above, check console. Toggle real mode for actual fetch.');
+        })();
+    </script>
+</body>
+
+</html>

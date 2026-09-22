@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<title>Finance · Markets</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #0d0e13;
+    --surface:  #17181d;
+    --card:     #1c1d22;
+    --row:      #202228;
+    --border:   rgba(255,255,255,0.08);
+    --green:    #81c995;
+    --red:      #f28b82;
+    --blue:     #8ab4f8;
+    --blue-pill:#1e3a5f;
+    --blue-text:#8ab4f8;
+    --text:     #e8eaed;
+    --muted:    #9aa0a6;
+    --faint:    #5f6368;
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Roboto', 'Google Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+  }
+
+  /* ── App shell ── */
+  #app {
+    width: 100%;
+    max-width: 430px;
+    height: 100dvh;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: var(--bg);
+    overflow: hidden;
+  }
+
+  /* ── Scrollable content area ── */
+  .view {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-bottom: 90px;
+    display: none;
+    scroll-behavior: smooth;
+  }
+  .view.active { display: block; }
+
+  /* ── Detail overlay ── */
+  #detail-overlay {
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    z-index: 100;
+    overflow-y: auto;
+    padding-bottom: 90px;
+    transform: translateX(100%);
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  #detail-overlay.open { transform: translateX(0); }
+
+  /* ── Bottom tab bar ── */
+  #tab-bar {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 80px;
+    background: #111217;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 8px 12px;
+    z-index: 200;
+  }
+
+  .tab-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--faint);
+    font-size: 11px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: all 0.2s ease;
+    min-width: 72px;
+  }
+  .tab-btn.active {
+    background: var(--blue-pill);
+    color: var(--blue-text);
+  }
+  .tab-btn svg { transition: stroke 0.2s; }
+
+  /* ── Common header ── */
+  .page-header {
+    padding: 20px 16px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .page-title {
+    font-family: 'Google Sans', 'Roboto', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, #4285f4, #34a853, #fbbc04, #ea4335);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+
+  /* ── Status banner ── */
+  .status-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px 14px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ── Region tabs ── */
+  .region-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 0 16px 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .region-tabs::-webkit-scrollbar { display: none; }
+  .region-tab {
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    border: none;
+    background: var(--card);
+    color: var(--muted);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+  .region-tab.active {
+    background: #2d3748;
+    color: var(--text);
+  }
+
+  /* ── Market index cards (large, Markets view) ── */
+  .index-cards {
+    display: flex;
+    gap: 10px;
+    padding: 0 16px 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .index-cards::-webkit-scrollbar { display: none; }
+
+  .index-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 14px 14px 10px;
+    min-width: 150px;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+    border: 1px solid var(--border);
+  }
+  .index-card:active { transform: scale(0.97); opacity: 0.85; }
+
+  .index-card .ic-name { font-size: 12px; color: var(--muted); margin-bottom: 4px; font-weight: 500; }
+  .index-card .ic-value {
+    font-size: 22px; font-weight: 700;
+    font-family: 'Google Sans', sans-serif;
+    color: var(--text);
+    line-height: 1.1; margin-bottom: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .index-card .ic-change { display: flex; align-items: center; gap: 5px; margin-bottom: 8px; }
+  .ic-badge {
+    display: inline-flex; align-items: center; gap: 3px;
+    padding: 2px 8px; border-radius: 4px;
+    font-size: 11px; font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .ic-badge.up   { background: rgba(129,201,149,0.15); color: var(--green); }
+  .ic-badge.down { background: rgba(242,139,130,0.15); color: var(--red); }
+  .ic-badge svg  { flex-shrink: 0; }
+
+  .index-card canvas { display: block; }
+
+  /* ── Compact market row (Lists view) ── */
+  .compact-markets {
+    display: flex;
+    gap: 8px;
+    padding: 0 16px 20px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .compact-markets::-webkit-scrollbar { display: none; }
+  .compact-card {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 9px 11px;
+    min-width: 130px;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .compact-card:active { transform: scale(0.96); }
+  .compact-card .cc-name { font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+  .compact-card .cc-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .compact-card .cc-val { font-size: 13px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+
+  /* ── Section label ── */
+  .section-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 16px 10px;
+  }
+  .section-label h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    font-family: 'Google Sans', sans-serif;
+  }
+  .icon-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--muted);
+    transition: background 0.15s;
+  }
+  .icon-btn:hover { background: var(--row); }
+
+  /* ── Watchlist group ── */
+  .watchlist-group {
+    background: var(--card);
+    border-radius: 14px;
+    margin: 0 12px 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .wg-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .wg-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .wg-actions { display: flex; align-items: center; gap: 12px; }
+  .wg-actions svg { color: var(--muted); cursor: pointer; }
+
+  .ticker-row {
+    display: grid;
+    grid-template-columns: 36px 1fr 70px 90px;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 16px;
+    cursor: pointer;
+    transition: background 0.12s ease;
+    border-bottom: 1px solid var(--border);
+  }
+  .ticker-row:last-child { border-bottom: none; }
+  .ticker-row:hover { background: var(--row); }
+
+  .ticker-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: var(--row);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .ticker-info .ti-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .ticker-info .ti-sub { font-size: 11px; color: var(--faint); margin-top: 1px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ticker-right { text-align: right; }
+  .ticker-right .tr-val { font-size: 14px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+  .ticker-right .tr-chg { font-size: 11px; font-variant-numeric: tabular-nums; }
+  .tr-chg.up   { color: var(--green); }
+  .tr-chg.down { color: var(--red); }
+
+  /* ── Detail view ── */
+  #detail-overlay .det-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 16px 8px;
+  }
+  .det-back {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 17px; font-weight: 600;
+    color: var(--text); cursor: pointer;
+    background: none; border: none; padding: 6px 0;
+  }
+  .det-plus {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text);
+    font-size: 20px; font-weight: 300;
+  }
+
+  .det-ticker { padding: 0 16px 4px; font-size: 11px; color: var(--faint); }
+  .det-name   { padding: 0 16px 6px; font-size: 12px; color: var(--muted); font-weight: 500; }
+  .det-price  {
+    padding: 2px 16px 6px;
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--text);
+    font-family: 'Google Sans', sans-serif;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .det-change {
+    display: flex; align-items: center; gap: 8px;
+    padding: 0 16px 6px;
+  }
+  .det-ts {
+    padding: 0 16px 14px;
+    font-size: 11px; color: var(--faint);
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  /* ── Chart area ── */
+  .chart-wrap {
+    padding: 0 0 0;
+    position: relative;
+  }
+  .chart-canvas-wrap {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+  }
+  .chart-canvas-wrap canvas { display: block; }
+
+  /* ── Period tabs ── */
+  .period-tabs {
+    display: flex;
+    gap: 0;
+    padding: 14px 12px 14px;
+    justify-content: space-between;
+  }
+  .period-tab {
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: var(--faint);
+    transition: all 0.2s;
+    font-family: 'Roboto', sans-serif;
+    min-width: 36px;
+    text-align: center;
+  }
+  .period-tab.active {
+    background: var(--blue-pill);
+    color: var(--blue-text);
+  }
+
+  /* ── News card ── */
+  .news-card {
+    background: var(--card);
+    border-radius: 12px;
+    margin: 0 12px 12px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .news-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .news-row:hover { background: var(--row); }
+  .news-row + .news-row { border-top: 1px solid var(--border); }
+  .news-left { display: flex; align-items: flex-start; gap: 12px; flex: 1; min-width: 0; }
+  .news-icon {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--row); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .news-text { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.4; }
+  .news-expand {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--row); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s;
+  }
+  .news-expand.open { transform: rotate(180deg); }
+  .news-body {
+    padding: 0 16px;
+    font-size: 13px; color: var(--muted); line-height: 1.6;
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+  }
+  .news-body.open { max-height: 400px; padding: 0 16px 16px; }
+  .news-link {
+    display: flex; align-items: center; gap: 5px;
+    color: var(--blue-text); font-size: 13px; margin-top: 10px;
+    text-decoration: none; cursor: pointer;
+  }
+  .news-sources { display: flex; align-items: center; gap: 6px; margin: 8px 0; font-size: 12px; color: var(--faint); }
+
+  /* ── Stats table ── */
+  .stats-table {
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 20px;
+  }
+  .stat-item {}
+  .stat-label { font-size: 11px; color: var(--faint); margin-bottom: 3px; }
+  .stat-value { font-size: 14px; font-weight: 600; color: var(--text); font-variant-numeric: tabular-nums; }
+
+  /* ── Summary card (Markets/Asia) ── */
+  .summary-card {
+    background: var(--card);
+    border-radius: 14px;
+    margin: 0 12px 12px;
+    padding: 16px;
+    border: 1px solid var(--border);
+  }
+  .sc-title { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+  .sc-headline { font-size: 15px; font-weight: 600; color: var(--text); line-height: 1.4; margin-bottom: 8px; }
+  .sc-body { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+  /* ── Divider ── */
+  .divider { height: 1px; background: var(--border); margin: 2px 16px; }
+
+  /* History & Ask placeholders */
+  .placeholder-screen {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 60vh; gap: 12px; color: var(--faint);
+  }
+  .placeholder-screen svg { opacity: 0.4; }
+  .placeholder-screen p { font-size: 15px; }
+
+  /* ── Scrollbar ── */
+  .view::-webkit-scrollbar { width: 0; }
+  #detail-overlay::-webkit-scrollbar { width: 0; }
+
+  /* ── Animations ── */
+  @keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+  .fade-up { animation: fadeUp 0.3s ease both; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ══════════════════════════════════════════════════════════
+       MARKETS VIEW
+  ══════════════════════════════════════════════════════════ -->
+  <div class="view active fade-up" id="view-markets">
+    <!-- Header -->
+    <div class="page-header">
+      <span class="page-title">Google Finance</span>
+      <div class="avatar">A</div>
+    </div>
+
+    <!-- Region tabs -->
+    <div class="region-tabs" id="region-tabs">
+      <button class="region-tab" onclick="setRegion('US',this)">US</button>
+      <button class="region-tab" onclick="setRegion('Europe',this)">Europe</button>
+      <button class="region-tab active" onclick="setRegion('Asia',this)">Asia</button>
+      <button class="region-tab" onclick="setRegion('LatAm',this)">Latin America</button>
+      <button class="region-tab" onclick="setRegion('Currencies',this)">Currencies</button>
+    </div>
+
+    <!-- Status -->
+    <div class="status-bar">
+      <svg width="13" height="13" viewBox="0 0 20 20" fill="#9c5ee8"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
+      Asian markets are closed
+    </div>
+
+    <!-- Large index cards -->
+    <div class="index-cards" id="index-cards-large"></div>
+
+    <!-- Market summary -->
+    <div class="summary-card fade-up" style="animation-delay:0.1s">
+      <div class="sc-title">Asia Market Summary</div>
+      <div class="sc-headline">Asian indexes display mixed performance amid regional headwinds</div>
+      <div class="news-sources">
+        <span style="width:16px;height:16px;border-radius:50%;background:#4285f4;display:inline-block;font-size:9px;color:#fff;display:flex;align-items:center;justify-content:center;">g</span>
+        <span style="width:16px;height:16px;border-radius:50%;background:#ea4335;display:inline-block;"></span>
+        <span>3 sources</span>
+      </div>
+      <div class="sc-body">
+        Major stock indexes in Asia showed varied results today as investors processed conflicting economic signals. While Hong Kong's Hang Seng index gained more than 1% following positive private-sector activity data, Japan's Nikkei 225 and South Korea's KOSPI faced downward pressure, with the Nikkei slipping below the 70,000-point threshold.
+      </div>
+      <div class="news-link" style="margin-top:10px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        Dive deeper on this topic with AI
+      </div>
+    </div>
+
+    <!-- Second news item -->
+    <div class="news-card fade-up" style="animation-delay:0.15s">
+      <div class="news-row" onclick="toggleNews(this)">
+        <div class="news-left">
+          <div class="news-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div class="news-text">Yen volatility persists as intervention concerns mount</div>
+        </div>
+        <div class="news-expand"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+      </div>
+      <div class="news-body">
+        The Japanese yen remains under significant pressure as markets brace for potential government intervention. The currency has weakened past the 158 level against the dollar, triggering speculation that the Bank of Japan or Ministry of Finance could step in to stabilize exchange rates.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       LISTS VIEW
+  ══════════════════════════════════════════════════════════ -->
+  <div class="view fade-up" id="view-lists">
+    <div class="page-header">
+      <span class="page-title">Google Finance</span>
+      <div class="avatar">A</div>
+    </div>
+    <div class="status-bar">
+      <svg width="13" height="13" viewBox="0 0 20 20" fill="#9c5ee8"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
+      Asian markets are closed
+    </div>
+
+    <!-- Compact market cards -->
+    <div class="compact-markets" id="compact-markets"></div>
+
+    <!-- Lists header -->
+    <div class="section-label" style="padding-top:4px;">
+      <h2>Lists</h2>
+      <div class="icon-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+    </div>
+
+    <!-- Watchlist group -->
+    <div class="watchlist-group">
+      <div class="wg-header">
+        <span class="wg-title">Watchlist</span>
+        <div class="wg-actions">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+        </div>
+      </div>
+      <div id="watchlist-rows"></div>
+    </div>
+
+    <!-- Equity sectors -->
+    <div class="section-label">
+      <h2>Equity sectors</h2>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--faint)" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+    </div>
+    <div class="watchlist-group" id="sectors-group"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       HISTORY VIEW
+  ══════════════════════════════════════════════════════════ -->
+  <div class="view" id="view-history">
+    <div class="page-header">
+      <span class="page-title">History</span>
+      <div class="avatar">A</div>
+    </div>
+    <div class="placeholder-screen">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--faint)" stroke-width="1.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+      <p>Your viewing history appears here</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       ASK VIEW
+  ══════════════════════════════════════════════════════════ -->
+  <div class="view" id="view-ask">
+    <div class="page-header">
+      <span class="page-title">Ask</span>
+      <div class="avatar">A</div>
+    </div>
+    <div class="placeholder-screen">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--faint)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      <p>Ask about any stock or market</p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       DETAIL OVERLAY
+  ══════════════════════════════════════════════════════════ -->
+  <div id="detail-overlay">
+    <div class="det-header">
+      <button class="det-back" onclick="closeDetail()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+        Markets
+      </button>
+      <div class="det-plus">+</div>
+    </div>
+    <div class="det-ticker" id="det-ticker">NI225:INDEXNIKKEI</div>
+    <div class="det-name"  id="det-name">Nikkei 225</div>
+    <div class="det-price" id="det-price">69,737.69</div>
+    <div class="det-change" id="det-change"></div>
+    <div class="det-ts">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="#fbbc04"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3" stroke="#fbbc04" stroke-width="2"/><line x1="12" y1="21" x2="12" y2="23" stroke="#fbbc04" stroke-width="2"/><line x1="1" y1="12" x2="3" y2="12" stroke="#fbbc04" stroke-width="2"/><line x1="21" y1="12" x2="23" y2="12" stroke="#fbbc04" stroke-width="2"/></svg>
+      Jul 6, 2026 3:45 PM GMT+09:00 · <span style="color:var(--blue-text);cursor:pointer;">Disclaimer</span>
+    </div>
+
+    <!-- Main chart -->
+    <div class="chart-wrap">
+      <div class="chart-canvas-wrap">
+        <canvas id="detail-chart"></canvas>
+      </div>
+    </div>
+
+    <!-- Period tabs -->
+    <div class="period-tabs">
+      <button class="period-tab active" onclick="setPeriod('1D',this)">1D</button>
+      <button class="period-tab" onclick="setPeriod('5D',this)">5D</button>
+      <button class="period-tab" onclick="setPeriod('1M',this)">1M</button>
+      <button class="period-tab" onclick="setPeriod('6M',this)">6M</button>
+      <button class="period-tab" onclick="setPeriod('YTD',this)">YTD</button>
+      <button class="period-tab" onclick="setPeriod('1Y',this)">1Y</button>
+      <button class="period-tab" onclick="setPeriod('5Y',this)">5Y</button>
+      <button class="period-tab" onclick="setPeriod('MAX',this)">MAX</button>
+    </div>
+
+    <!-- News card -->
+    <div class="news-card">
+      <div class="news-row" onclick="toggleNews(this)">
+        <div class="news-left">
+          <div class="news-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div class="news-text" id="det-news-title">Nikkei 225 climbed significantly in June, reaching record highs …</div>
+        </div>
+        <div class="news-expand"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+      </div>
+      <div class="news-body">
+        The Nikkei 225 climbed significantly in June as investors responded to strong earnings from domestic exporters and a weakening yen that boosted competitiveness. The index reached a record intraday high of 72,831 before retreating amid profit-taking in late July.
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="divider"></div>
+    <div class="stats-table" id="det-stats"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════
+       BOTTOM TAB BAR
+  ══════════════════════════════════════════════════════════ -->
+  <div id="tab-bar">
+    <button class="tab-btn active" id="tab-markets" onclick="switchTab('markets')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2" y="3" width="6" height="18" rx="1"/><rect x="9" y="8" width="6" height="13" rx="1"/><rect x="16" y="13" width="6" height="8" rx="1"/></svg>
+      Markets
+    </button>
+    <button class="tab-btn" id="tab-lists" onclick="switchTab('lists')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Lists
+    </button>
+    <button class="tab-btn" id="tab-history" onclick="switchTab('history')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      History
+    </button>
+    <button class="tab-btn" id="tab-ask" onclick="switchTab('ask')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Ask
+    </button>
+  </div>
+</div>
+
+<script>
+// ─── DATA ──────────────────────────────────────────────────────────────────
+const MARKETS = [
+  { ticker:'NI225:INDEXNIKKEI', name:'Nikkei 225',    short:'Nikkei 225', value:69737.69, change:-0.01, changeAbs:-6.38,   color:'red',   open:69973.34, high:70384.59, low:68904.41, wkHigh:72831.73, wkLow:39288.90 },
+  { ticker:'SSE:INDEX',         name:'Shanghai Comp.', short:'SSE',        value:4041.24,  change:-0.06, changeAbs:-2.44,   color:'red',   open:4051.10,  high:4064.88,  low:4032.15,  wkHigh:4588.23,  wkLow:2882.50  },
+  { ticker:'HSI:INDEX',         name:'Hang Seng',      short:'HSI',        value:23616.32, change:1.14,  changeAbs:266.70,  color:'green', open:23350.62, high:23670.00, low:23290.44, wkHigh:24284.07, wkLow:14961.18 },
+];
+
+const WATCHLIST = [
+  { ticker:'BTC/USD', name:'Bitcoin / United States Dollar', value:63402.68, change:-0.20, color:'red'   },
+  { ticker:'USD/PKR', name:'United States Dollar / Pak. Rupee', value:278.08, change:-0.01, color:'red'  },
+];
+
+const SECTORS = [
+  { ticker:'SIXB', name:'S&P Materials Sel…',      value:1093.79, change:-1.05, color:'red'   },
+  { ticker:'SIXC', name:'S&P Communications…',     value:574.34,  change:0.14,  color:'green' },
+  { ticker:'SIXE', name:'S&P Energy Selec…',       value:1118.76, change:-0.27, color:'red'   },
+  { ticker:'SIXI', name:'S&P Financial Sel…',      value:1869.89, change:0.21,  color:'green' },
+];
+
+// ─── Chart data generator ──────────────────────────────────────────────────
+function genPriceSeries(base, n, volatility, trend) {
+  const pts = [base];
+  for (let i = 1; i < n; i++) {
+    const prev = pts[i-1];
+    const noise = (Math.random() - 0.5) * volatility;
+    const t = trend * (i / n);
+    pts.push(Math.max(prev + noise + t, base * 0.85));
+  }
+  return pts;
+}
+
+function makeSparkData(m) {
+  const n = 20;
+  const trend = m.change < 0 ? -m.value * 0.005 : m.value * 0.004;
+  return genPriceSeries(m.value, n, m.value * 0.003, trend);
+}
+
+const SPARK_DATA = {};
+MARKETS.forEach(m => { SPARK_DATA[m.ticker] = makeSparkData(m); });
+WATCHLIST.forEach(m => { SPARK_DATA[m.ticker] = genPriceSeries(m.value, 20, m.value*0.02, m.change<0?-m.value*0.01:m.value*0.008); });
+SECTORS.forEach(m => { SPARK_DATA[m.ticker] = genPriceSeries(m.value, 20, m.value*0.015, m.change<0?-m.value*0.008:m.value*0.006); });
+
+// ─── Helpers ───────────────────────────────────────────────────────────────
+function fmt(n) {
+  return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function badge(m, compact) {
+  const up = m.change >= 0;
+  const cl = up ? 'up' : 'down';
+  const arrow = up
+    ? `<svg width="9" height="9" viewBox="0 0 10 10"><path d="M5 1L9 9L1 9Z" fill="currentColor"/></svg>`
+    : `<svg width="9" height="9" viewBox="0 0 10 10"><path d="M5 9L9 1L1 1Z" fill="currentColor"/></svg>`;
+  const pct = (up ? '+' : '') + m.change.toFixed(2) + '%';
+  return `<span class="ic-badge ${cl}">${arrow} ${pct}</span>`;
+}
+
+// ─── Mini sparkline on Canvas ──────────────────────────────────────────────
+function drawSpark(canvas, data, color, W, H) {
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const min = Math.min(...data), max = Math.max(...data);
+  const range = max - min || 1;
+  const pad = 2;
+  const pts = data.map((v, i) => ({
+    x: pad + (i / (data.length-1)) * (W - pad*2),
+    y: H - pad - ((v - min) / range) * (H - pad*2)
+  }));
+
+  // Gradient fill
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, color === 'red' ? 'rgba(242,139,130,0.3)' : 'rgba(129,201,149,0.3)');
+  grad.addColorStop(1, 'rgba(0,0,0,0)');
+
+  ctx.beginPath();
+  pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+  ctx.lineTo(pts[pts.length-1].x, H);
+  ctx.lineTo(pts[0].x, H);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+  ctx.strokeStyle = color === 'red' ? '#f28b82' : '#81c995';
+  ctx.lineWidth = 1.5;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.stroke();
+}
+
+// ─── Render large index cards ──────────────────────────────────────────────
+function renderIndexCards() {
+  const container = document.getElementById('index-cards-large');
+  container.innerHTML = '';
+  MARKETS.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'index-card';
+    div.innerHTML = `
+      <div class="ic-name">${m.short}</div>
+      <div class="ic-value">${fmt(m.value)}</div>
+      <div class="ic-change">${badge(m)}</div>
+      <canvas width="150" height="55"></canvas>
+    `;
+    div.addEventListener('click', () => openDetail(m));
+    container.appendChild(div);
+    const canvas = div.querySelector('canvas');
+    drawSpark(canvas, SPARK_DATA[m.ticker], m.color, 150, 55);
+  });
+}
+
+// ─── Render compact market cards ──────────────────────────────────────────
+function renderCompactMarkets() {
+  const container = document.getElementById('compact-markets');
+  container.innerHTML = '';
+  MARKETS.forEach(m => {
+    const up = m.change >= 0;
+    const color = up ? '#81c995' : '#f28b82';
+    const arrow = up ? '↑' : '↓';
+    const div = document.createElement('div');
+    div.className = 'compact-card';
+    div.innerHTML = `
+      <div class="cc-name">${m.short}</div>
+      <div class="cc-row">
+        <span class="cc-val">${fmt(m.value)}</span>
+        <span class="ic-badge ${up?'up':'down'}" style="font-size:10px;">${m.change.toFixed(2)}% ${arrow}</span>
+      </div>
+    `;
+    div.addEventListener('click', () => openDetail(m));
+    container.appendChild(div);
+  });
+}
+
+// ─── Render ticker rows ────────────────────────────────────────────────────
+function renderTickerRows(data, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+  data.forEach(m => {
+    const up = m.change >= 0;
+    const row = document.createElement('div');
+    row.className = 'ticker-row';
+    row.innerHTML = `
+      <div class="ticker-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--faint)" stroke-width="2"><rect x="2" y="3" width="5" height="18" rx="1"/><rect x="9" y="8" width="5" height="13" rx="1"/><rect x="16" y="13" width="5" height="8" rx="1"/></svg>
+      </div>
+      <div class="ticker-info">
+        <div class="ti-name">${m.ticker}</div>
+        <div class="ti-sub">${m.name}</div>
+      </div>
+      <canvas width="70" height="32"></canvas>
+      <div class="ticker-right">
+        <div class="tr-val">${fmt(m.value)}</div>
+        <div class="tr-chg ${up?'up':'down'}">${(up?'+':'')+m.change.toFixed(2)}% ${up?'↑':'↓'}</div>
+      </div>
+    `;
+    row.addEventListener('click', () => openDetail(m));
+    container.appendChild(row);
+    const canvas = row.querySelector('canvas');
+    drawSpark(canvas, SPARK_DATA[m.ticker], m.color, 70, 32);
+  });
+}
+
+// ─── Detail chart ─────────────────────────────────────────────────────────
+let detailChart = null;
+const PERIODS = {
+  '1D':  { n:48,  labels: Array.from({length:48},(_,i)=>{ const h=Math.floor(6+i/4); return i%4===0?`${h}:00`:''; }), vol:0.004 },
+  '5D':  { n:5,   labels:['Mon','Tue','Wed','Thu','Fri'], vol:0.008 },
+  '1M':  { n:30,  labels: Array.from({length:30},(_,i)=>(i+1)%5===0?`${i+1}`:''), vol:0.012 },
+  '6M':  { n:6,   labels:['Jan','Feb','Mar','Apr','May','Jun'], vol:0.025 },
+  'YTD': { n:7,   labels:['Jan','Feb','Mar','Apr','May','Jun','Jul'], vol:0.03 },
+  '1Y':  { n:12,  labels:['Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun','Jul'], vol:0.04 },
+  '5Y':  { n:60,  labels: Array.from({length:60},(_,i)=>i%12===0?`${2020+Math.floor(i/12)}`:''), vol:0.06 },
+  'MAX': { n:120, labels: Array.from({length:120},(_,i)=>i%24===0?`${2015+Math.floor(i/24)}`:''), vol:0.08 },
+};
+
+let currentMarket = MARKETS[0];
+
+function buildDetailChart(market, period='1D') {
+  const cfg = PERIODS[period];
+  const trend = market.change < 0 ? -market.value*0.001 : market.value*0.0008;
+  const data = genPriceSeries(market.value * 1.005, cfg.n, market.value * cfg.vol, trend * cfg.n);
+  const color = market.color === 'red' ? '#f28b82' : '#81c995';
+
+  const ctx = document.getElementById('detail-chart').getContext('2d');
+  if (detailChart) detailChart.destroy();
+
+  detailChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: cfg.labels,
+      datasets: [{
+        data,
+        fill: true,
+        borderColor: color,
+        borderWidth: 1.5,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: color,
+        tension: 0.35,
+        backgroundColor: (ctx2) => {
+          const chart = ctx2.chart;
+          const {ctx: c, chartArea} = chart;
+          if (!chartArea) return 'transparent';
+          const grad = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+          grad.addColorStop(0, market.color==='red' ? 'rgba(242,139,130,0.28)' : 'rgba(129,201,149,0.28)');
+          grad.addColorStop(0.65,'rgba(13,14,19,0.05)');
+          grad.addColorStop(1,   'rgba(13,14,19,0.00)');
+          return grad;
+        },
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      animation: { duration: 400 },
+      interaction: { mode:'index', intersect:false },
+      plugins: {
+        legend: { display:false },
+        tooltip: {
+          backgroundColor: '#1c1d22',
+          borderColor: 'rgba(255,255,255,0.1)',
+          borderWidth: 1,
+          titleColor: '#9aa0a6',
+          bodyColor: '#e8eaed',
+          padding: 10,
+          cornerRadius: 8,
+          callbacks: { label: c => fmt(c.parsed.y) }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display:false },
+          border: { display:false },
+          ticks: { color:'#5f6368', font:{ size:10, family:'Roboto,sans-serif' }, maxRotation:0, autoSkip:true, maxTicksLimit:6 }
+        },
+        y: {
+          position: 'right',
+          grid: { color:'rgba(255,255,255,0.04)', drawTicks:false },
+          border: { display:false },
+          ticks: { color:'#5f6368', font:{ size:10, family:'Roboto,sans-serif' }, maxTicksLimit:5,
+            callback: v => v.toLocaleString('en-US',{maximumFractionDigits:0}) }
+        }
+      }
+    }
+  });
+}
+
+function setPeriod(p, btn) {
+  document.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  buildDetailChart(currentMarket, p);
+}
+
+// ─── Open/close detail ─────────────────────────────────────────────────────
+function openDetail(m) {
+  currentMarket = m;
+  const up = m.change >= 0;
+  const color = up ? '#81c995' : '#f28b82';
+
+  document.getElementById('det-ticker').textContent = m.ticker;
+  document.getElementById('det-name').textContent   = m.name || m.short;
+  document.getElementById('det-price').textContent  = fmt(m.value);
+
+  document.getElementById('det-change').innerHTML = `
+    ${badge(m)}
+    <span style="color:${color};font-size:13px;">(${(up?'+':'')+fmt(m.changeAbs||m.change*m.value/100)}) 1D</span>
+  `;
+
+  // Stats
+  if (m.open) {
+    document.getElementById('det-stats').innerHTML = `
+      <div class="stat-item"><div class="stat-label">Open</div><div class="stat-value">${fmt(m.open)}</div></div>
+      <div class="stat-item"><div class="stat-label">52-wk high</div><div class="stat-value">${fmt(m.wkHigh)}</div></div>
+      <div class="stat-item"><div class="stat-label">High</div><div class="stat-value">${fmt(m.high)}</div></div>
+      <div class="stat-item"><div class="stat-label">52-wk low</div><div class="stat-value">${fmt(m.wkLow)}</div></div>
+      <div class="stat-item"><div class="stat-label">Low</div><div class="stat-value">${fmt(m.low)}</div></div>
+    `;
+  } else {
+    document.getElementById('det-stats').innerHTML = `
+      <div class="stat-item"><div class="stat-label">Value</div><div class="stat-value">${fmt(m.value)}</div></div>
+      <div class="stat-item"><div class="stat-label">Change</div><div class="stat-value" style="color:${color}">${(up?'+':'')+m.change.toFixed(2)}%</div></div>
+    `;
+  }
+
+  // Reset period tabs
+  document.querySelectorAll('.period-tab').forEach((t,i) => t.classList.toggle('active', i===0));
+
+  const overlay = document.getElementById('detail-overlay');
+  overlay.classList.add('open');
+  overlay.scrollTop = 0;
+
+  // Wait for DOM paint then build chart
+  requestAnimationFrame(() => setTimeout(() => buildDetailChart(m, '1D'), 50));
+}
+
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('open');
+}
+
+// ─── Tab switching ─────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`view-${tab}`).classList.add('active');
+  document.getElementById(`tab-${tab}`).classList.add('active');
+}
+
+// ─── Region filter ─────────────────────────────────────────────────────────
+function setRegion(r, btn) {
+  document.querySelectorAll('.region-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ─── News toggle ───────────────────────────────────────────────────────────
+function toggleNews(row) {
+  const body = row.nextElementSibling;
+  const exp  = row.querySelector('.news-expand');
+  if (!body) return;
+  body.classList.toggle('open');
+  exp?.classList.toggle('open');
+}
+
+// ─── Init ──────────────────────────────────────────────────────────────────
+renderIndexCards();
+renderCompactMarkets();
+renderTickerRows(WATCHLIST, 'watchlist-rows');
+
+// Sectors group
+const sg = document.getElementById('sectors-group');
+const tempDiv = document.createElement('div');
+tempDiv.id = 'sectors-rows';
+sg.appendChild(tempDiv);
+renderTickerRows(SECTORS, 'sectors-rows');
+</script>
+</body>
+</html>

@@ -1,0 +1,299 @@
+YUNI Summer Camp 2026
+Future Skills, Creativity & Career Exploration Program
+Program Structure
+Duration: 6 WeeksClasses: 3–4 Sessions per WeekClass Duration: 1.5 Hours per SessionLevel: Beginner to Intermediate
+YUNI Summer Camp is designed to introduce students to high-demand skills through hands-on learning, guided projects, competitions, and portfolio development. Each track serves as a foundation pathway into advanced professional training programs.
+
+1. Artificial Intelligence (14,500) Each category
+What is this program?
+This program introduces students to Artificial Intelligence, Generative AI, Automation, and Data Analytics. Students learn how modern AI systems work and how AI tools are being used in education, business, freelancing, and industry.
+Subcategory 1: Generative AI 
+What Students Will Learn
+AI fundamentals
+ChatGPT, Gemini & Claude
+Prompt Engineering
+AI Content Creation
+AI Productivity Systems
+Skills Gained
+Create effective prompts
+Generate professional content
+Improve productivity using AI tools
+Use AI for learning and research
+
+Subcategory 2: AI Automation 
+What Students Will Learn
+Workflow automation
+AI-powered business processes
+Make.com & n8n
+AI integrations
+Automation design
+Skills Gained
+Build automation workflows
+Connect multiple applications
+Reduce repetitive tasks
+Create no-code AI solutions
+
+Subcategory 3: Machine Learning 
+What Students Will Learn
+Machine Learning concepts
+Data collection and preparation
+Data visualization
+AI-powered decision making
+Career pathways in AI
+Skills Gained
+Understand ML concepts
+Analyze datasets
+Create visual dashboards
+Develop beginner AI projects
+
+2. Cybersecurity (14,500) Each category
+What is this program?
+This track introduces students to cybersecurity, ethical hacking, network security, and digital forensics. Students learn how cyber threats work and how organizations protect systems and data.
+Subcategory 1: Cybersecurity Fundamentals
+What Students Will Learn
+Cybersecurity basics
+Digital safety
+Cyber threats
+Malware & phishing
+Security best practices
+Skills Gained
+Identify cyber threats
+Secure online accounts
+Apply cyber hygiene practices
+Improve digital safety awareness
+
+Subcategory 2: Ethical Hacking & Network Security
+What Students Will Learn
+Ethical hacking methodology
+Kali Linux basics
+Reconnaissance
+Vulnerability assessment
+Network security fundamentals
+Skills Gained
+Perform basic security testing
+Analyze network traffic
+Conduct vulnerability scans
+Understand penetration testing workflows
+
+Subcategory 3: Digital Forensics 
+What Students Will Learn
+Digital investigations
+Evidence collection
+Log analysis
+Cybersecurity reporting
+Skills Gained
+Analyze digital evidence
+Investigate security incidents
+Document findings professionally
+Understand forensic workflows
+
+3. English Language Excellence (12,999) Each category
+What is this program?
+This track focuses on communication, academic English, IELTS preparation, and professional workplace communication. Students develop confidence in speaking, writing, reading, and presenting.
+Subcategory 1: Spoken English & Communication
+What Students Will Learn
+Everyday communication
+Pronunciation and fluency
+Public speaking
+Group discussions
+Confidence building
+Skills Gained
+Speak confidently in English
+Improve fluency and pronunciation
+Participate in discussions
+Deliver presentations effectively
+
+Subcategory 2: IELTS Academic Writing & Reading
+What Students Will Learn
+IELTS Reading strategies
+Academic vocabulary
+Task 1 Writing
+Task 2 Essay Writing
+Time management techniques
+Skills Gained
+Improve reading comprehension
+Write structured academic essays
+Analyze graphs and charts
+Build IELTS exam readiness
+
+Subcategory 3: Professional English
+What Students Will Learn
+Business communication
+Professional email writing
+CV development
+LinkedIn optimization
+Interview preparation
+Skills Gained
+Write professional emails
+Create a strong CV
+Improve interview performance
+Build professional communication skills
+
+4. Digital Marketing (12,999) Each category
+What is this program?
+Students learn how businesses use digital platforms to attract customers, build brands, and generate sales.
+Subcategory 1: SEO & Content Marketing
+What Students Will Learn
+Search Engine Optimization
+Keyword research
+Content strategy
+Blogging
+AI-assisted content creation
+Skills Gained
+Optimize content for search engines
+Create marketing content
+Conduct SEO audits
+Build content strategies
+
+Subcategory 2: Business Development
+What Students Will Learn
+• Basics of business development• Client acquisition strategies• Sales funnels and conversion process• Relationship building & networking• Market research and opportunity identification
+Skills Gained
+• Identify and develop new business opportunities• Build and maintain client relationships• Communicate effectively in sales and negotiations• Understand growth strategies for startups and businesses
+
+Subcategory 3: Social Media Marketing
+What Students Will Learn
+Content planning
+Instagram marketing
+TikTok marketing
+Brand building
+Social media analytics
+Skills Gained
+Manage social media accounts
+Create content calendars
+Grow online communities
+Analyze audience engagement
+
+5. Web Development (12,999) Each category
+What is this program?
+Students learn how websites are designed, developed, and deployed using modern web technologies.
+Subcategory 1: Front-End Development
+What Students Will Learn
+HTML
+CSS
+Responsive Design
+JavaScript Fundamentals
+Skills Gained
+Build responsive websites
+Design modern web pages
+Create interactive user experiences
+
+Subcategory 2: Full-Stack Development
+What Students Will Learn
+APIs
+Databases
+Backend concepts
+Deployment
+Skills Gained
+Connect websites to databases
+Develop dynamic applications
+Deploy web projects
+
+Subcategory 3: WordPress & No-Code Development
+What Students Will Learn
+WordPress
+Elementor
+Shopify
+Website management
+Skills Gained
+Build business websites
+Manage content systems
+Create eCommerce stores
+
+6. Art & Creative Design (12,999) Each category
+What is this program?
+This program is designed for students interested in Fine Arts, Design, Architecture, and Art School admissions. It focuses on creativity, portfolio development, and practical artistic skills.
+Subcategory 1: Drawing 
+What Students Will Learn
+Observation drawing
+Perspective drawing
+Still life studies
+Figure drawing
+Art school entrance preparation
+Skills Gained
+Develop drawing fundamentals
+Improve visual observation
+Build an art school portfolio
+Prepare for entrance tests
+
+Subcategory 2: Painting
+What Students Will Learn
+Color theory
+Watercolor techniques
+Acrylic painting
+Composition principles
+Skills Gained
+Create original paintings
+Apply color effectively
+Develop artistic techniques
+
+Subcategory 3: Sculpture & 3D Art
+What Students Will Learn
+Clay modeling
+Hand-building techniques
+Texture and form
+Exhibition preparation
+Skills Gained
+Create three-dimensional artworks
+Understand spatial design
+Develop creative expression
+
+7 — Soft Skills & Communication 
+
+Critical Thinking & Problem Solving
+What Students Will Learn
+Design thinking (Empathise–Define–Ideate–Prototype–Test) 
+Root cause analysis (5 Whys) 
+Structured decision-making frameworks 
+Creative problem-solving techniques 
+Real-world business case studies 
+Skills Gained
+Analyze problems systematically 
+Identify root causes and propose effective solutions 
+Apply design thinking to real-world challenges 
+Make informed decisions using structured frameworks 
+Present solutions confidently to peers 
+
+Leadership & Teamwork
+What Students Will Learn
+Team roles and dynamics 
+Leadership styles 
+Conflict resolution strategies 
+Giving and receiving feedback 
+Cross-functional collaboration 
+Delegation and peer mentoring 
+Skills Gained
+Lead teams effectively toward shared goals 
+Collaborate productively with diverse team members 
+Resolve conflicts professionally 
+Delegate tasks and manage responsibilities 
+Provide constructive feedback and mentorship 
+Personal Branding
+What Students Will Learn
+Personal branding 
+Identifying strengths 
+LinkedIn optimization 
+Portfolio creation 
+Digital presence 
+Professional networking 
+Personal communication 
+Content creation 
+Skills Gained
+Build a strong personal brand 
+Create a professional LinkedIn profile 
+Develop a compelling portfolio 
+Improve professional communication 
+Grow a professional network 
+Strengthen online visibility 
+Present yourself confidently 
+
+Program Outcomes
+By the end of the Summer Camp, students will:
+Develop practical skills in their chosen field
+Complete portfolio-ready projects
+Participate in competitions and showcase events
+Receive YUNI certification upon successful completion
+Explore career and academic pathways
+Prepare for advanced YUNI training programs
+Build confidence, creativity, and professional readiness
+YUNI Summer Camp 2026 Learn • Build • Create • Showcase • Grow
