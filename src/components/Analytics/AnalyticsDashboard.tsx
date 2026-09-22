@@ -510,7 +510,7 @@ const AnalyticsDashboard: React.FC = () => {
           <circle cx="9" cy="7" r="4"/>
           <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
         </svg>
-        Submit an entry · Written to Firebase with server timestamp
+        Submit an entry
       </div>
 
       {/* Form card */}
@@ -519,9 +519,6 @@ const AnalyticsDashboard: React.FC = () => {
         <div style={{ padding: '14px 16px', borderBottom: `1px solid ${C.border}` }}>
           <p style={{ fontSize: 16, fontWeight: 700, color: C.text,
             fontFamily: "'Outfit',sans-serif", margin: 0 }}>New Submission</p>
-          <p style={{ fontSize: 12, color: C.faint, margin: '3px 0 0' }}>
-            Data stored in Firestore · metrics update in real time
-          </p>
         </div>
 
         <form onSubmit={handleSubmit} style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: 14 }}>
