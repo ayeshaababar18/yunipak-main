@@ -11,7 +11,7 @@
  *   – Period tabs on chart: ALL | L10 | L5
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   collection, addDoc, onSnapshot, serverTimestamp,
   query, orderBy, limit,
