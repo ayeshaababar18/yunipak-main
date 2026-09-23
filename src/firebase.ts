@@ -11,13 +11,13 @@ import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey:            import.meta.env.VITE_FIREBASE_API_KEY            || '',
-  authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN        || '',
-  projectId:         import.meta.env.VITE_FIREBASE_PROJECT_ID         || '',
-  storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET     || '',
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '',
-  appId:             import.meta.env.VITE_FIREBASE_APP_ID             || '',
-  measurementId:     import.meta.env.VITE_FIREBASE_MEASUREMENT_ID     || '',
+  apiKey:            import.meta.env.VITE_FIREBASE_API_KEY            || 'AIzaSyC0IU4FvuD4tnCR9YWbFm7hNWlpjOz4xZw',
+  authDomain:        import.meta.env.VITE_FIREBASE_AUTH_DOMAIN        || 'yuni-909e8.firebaseapp.com',
+  projectId:         import.meta.env.VITE_FIREBASE_PROJECT_ID         || 'yuni-909e8',
+  storageBucket:     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET     || 'yuni-909e8.firebasestorage.app',
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '528565026435',
+  appId:             import.meta.env.VITE_FIREBASE_APP_ID             || '1:528565026435:web:8bc4b3ab384410eb1f65b6',
+  measurementId:     import.meta.env.VITE_FIREBASE_MEASUREMENT_ID     || 'G-BKTF50TKSH',
 };
 
 // Prevent duplicate app initialisation during HMR
