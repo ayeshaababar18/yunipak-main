@@ -14,7 +14,7 @@
 import React, { useState, useEffect } from 'react';
 import {
   collection, addDoc, onSnapshot, serverTimestamp,
-  query, orderBy, limit,
+  query,
   type QueryDocumentSnapshot, type DocumentData,
 } from 'firebase/firestore';
 import { db } from '../../firebase';
@@ -226,16 +226,34 @@ const AnalyticsDashboard: React.FC = () => {
 
   // ── Firebase listener ───────────────────────────────────────────────────
   useEffect(() => {
-    const q = query(collection(db, 'form_submissions'), orderBy('createdAt', 'desc'), limit(30));
+    // Remove orderBy to ensure old records without createdAt are still fetched
+    const q = query(collection(db, 'form_submissions'));
     const unsub = onSnapshot(q, snap => {
-      const docs: Entry[] = [];
+      const docs: (Entry & { _time: number })[] = [];
       snap.forEach((d: QueryDocumentSnapshot<DocumentData>) => {
         const data = d.data();
-        docs.push({ id: d.id, name: String(data.name ?? ''), age: Number(data.age ?? 0), message: String(data.message ?? '') });
+        let time = 0;
+        if (data.createdAt === null) time = Date.now(); // pending local write
+        else if (data.createdAt?.toMillis) time = data.createdAt.toMillis();
+        else if (data.createdAt) time = Number(data.createdAt) || 0;
+        
+        docs.push({ 
+          id: d.id, 
+          name: String(data.name ?? ''), 
+          age: Number(data.age ?? 0), 
+          message: String(data.message ?? ''),
+          _time: time
+        });
       });
-      setEntries(docs);
+      // Sort in descending order (newest first)
+      docs.sort((a, b) => b._time - a._time);
+      // Limit to 30 and remove the temporary _time property
+      setEntries(docs.slice(0, 30).map(({ _time, ...rest }) => rest as Entry));
       setReady(true);
-    }, () => setReady(true));
+    }, (err) => {
+      console.error('Firebase error:', err);
+      setReady(true);
+    });
     return () => unsub();
   }, []);
 
