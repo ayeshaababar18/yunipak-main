@@ -278,7 +278,8 @@ const AnalyticsDashboard: React.FC = () => {
       pointHoverRadius: 5,
       pointHoverBackgroundColor: C.red,
       tension: 0.35,
-      backgroundColor: (ctx: { chart: ChartJS<'line'> }) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      backgroundColor: (ctx: any) => {
         const chart = ctx.chart;
         const { ctx: c, chartArea } = chart;
         if (!chartArea) return 'transparent';

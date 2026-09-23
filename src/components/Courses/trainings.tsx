@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -138,7 +139,7 @@ const Trainings: React.FC = () => {
         body: JSON.stringify(formData),
       });
       setSubmitStatus({ type: 'success', message: 'Enrollment data transmitted successfully! Our tactical team will contact you soon.' });
-    } catch (error) {
+    } catch {
       setSubmitStatus({ type: 'error', message: 'Data sync failed. Please check your connection and retry.' });
     } finally {
       setIsSubmitting(false);

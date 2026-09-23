@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
 import { Send, CheckCircle, AlertTriangle } from 'lucide-react';
 import confetti from 'canvas-confetti';

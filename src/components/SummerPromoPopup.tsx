@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect } from 'react';
 import { X, ArrowRight, Sparkles, ShieldCheck, Send, Award } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';

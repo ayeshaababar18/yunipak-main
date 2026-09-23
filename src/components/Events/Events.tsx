@@ -289,7 +289,7 @@ const EventsComponent: React.FC = () => {
         body: submitData,
       });
       setSubmitStatus({ type: 'success', message: 'Registration submitted successfully! See you at the Summit.' });
-    } catch (error) {
+    } catch {
       setSubmitStatus({ type: 'error', message: 'Submission failed. Please check your connection.' });
     } finally {
       setIsSubmitting(false);

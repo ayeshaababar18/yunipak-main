@@ -201,7 +201,7 @@ const CertificateForm: React.FC = () => {
       } else {
         setError(result.error || 'Verification failed. Please check your details.');
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again later.');
     } finally {
       setIsLoading(false);

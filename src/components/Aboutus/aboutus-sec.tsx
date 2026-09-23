@@ -20,7 +20,7 @@ const AboutUsPage: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
-    let ctx = gsap.context(() => {
+    const ctx = gsap.context(() => {
       // Animate glass cards
       gsap.from('.glass-card', {
         scrollTrigger: {
